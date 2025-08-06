@@ -12,4 +12,6 @@ public interface EventService {
     EventResponseDTO createEvent(EventCreateDTO eventCreateDTO);
     EventResponseDTO updateEvent(Long id, EventUpdateDTO eventUpdateDTO);
     void deleteEvent(Long id);
+
+    Integer getContador();
 }

@@ -1,4 +1,4 @@
-package com.gestao.evento.service;
+package com.gestao.evento.service.impl;
 
 import com.gestao.evento.dto.EventCreateDTO;
 import com.gestao.evento.dto.EventResponseDTO;
@@ -6,12 +6,15 @@ import com.gestao.evento.dto.EventUpdateDTO;
 import com.gestao.evento.entity.Event;
 import com.gestao.evento.exception.EventNotFoundException;
 import com.gestao.evento.repository.EventRepository;
+import com.gestao.evento.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
+
+    private final AtomicInteger contador = new AtomicInteger(0);
 
     @Override
     @Transactional(readOnly = true)
@@ -43,19 +48,19 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventResponseDTO createEvent(EventCreateDTO eventCreateDTO) {
-        log.info("Criando novo evento com título: {}", eventCreateDTO.getTitle());
+        log.info("Criando novo evento com título: {}", eventCreateDTO.getTitulo());
 
         Event event = Event.builder()
-                .title(eventCreateDTO.getTitle())
-                .description(eventCreateDTO.getDescription())
-                .eventDateTime(eventCreateDTO.getEventDateTime())
-                .location(eventCreateDTO.getLocation())
+                .title(eventCreateDTO.getTitulo())
+                .description(eventCreateDTO.getDescricao())
+                .eventDateTime(eventCreateDTO.getDataEvento())
+                .location(eventCreateDTO.getLocal())
                 .deleted(false)
                 .build();
 
         Event savedEvent = eventRepository.save(event);
         log.info("Evento criado com sucesso com id: {}", savedEvent.getId());
-
+        contador.incrementAndGet();
         return mapToResponseDTO(savedEvent);
     }
 
@@ -66,10 +71,10 @@ public class EventServiceImpl implements EventService {
         Event existingEvent = eventRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado com id: " + id));
 
-        existingEvent.setTitle(eventUpdateDTO.getTitle());
-        existingEvent.setDescription(eventUpdateDTO.getDescription());
-        existingEvent.setEventDateTime(eventUpdateDTO.getEventDateTime());
-        existingEvent.setLocation(eventUpdateDTO.getLocation());
+        existingEvent.setTitle(eventUpdateDTO.getTitulo());
+        existingEvent.setDescription(eventUpdateDTO.getDescricao());
+        existingEvent.setEventDateTime(eventUpdateDTO.getDataEvento());
+        existingEvent.setLocation(eventUpdateDTO.getLocal());
 
         Event updatedEvent = eventRepository.save(existingEvent);
         log.info("Evento atualizado com sucesso com id: {}", updatedEvent.getId());
@@ -86,8 +91,13 @@ public class EventServiceImpl implements EventService {
 
         event.setDeleted(true);
         eventRepository.save(event);
-
+        contador.decrementAndGet();
         log.info("Evento excluído (soft delete) com sucesso com id: {}", id);
+    }
+
+    @Override
+    public Integer getContador() {
+        return contador.get();
     }
 
     private EventResponseDTO mapToResponseDTO(Event event) {

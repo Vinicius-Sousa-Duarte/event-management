@@ -6,6 +6,7 @@ import com.gestao.evento.dto.EventUpdateDTO;
 import com.gestao.evento.entity.Event;
 import com.gestao.evento.exception.EventNotFoundException;
 import com.gestao.evento.repository.EventRepository;
+import com.gestao.evento.service.impl.EventServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,17 +56,17 @@ class EventServiceImplTest {
                 .build();
 
         eventCreateDTO = EventCreateDTO.builder()
-                .title("Novo Evento")
-                .description("Descrição do Novo Evento")
-                .eventDateTime(LocalDateTime.of(2025, 2, 2, 14, 0))
-                .location("Novo Local")
+                .titulo("Novo Evento")
+                .descricao("Descrição do Novo Evento")
+                .dataEvento(LocalDateTime.of(2025, 2, 2, 14, 0))
+                .local("Novo Local")
                 .build();
 
         eventUpdateDTO = EventUpdateDTO.builder()
-                .title("Evento Atualizado")
-                .description("Descrição Atualizada")
-                .eventDateTime(LocalDateTime.of(2025, 3, 3, 16, 0))
-                .location("Local Atualizado")
+                .titulo("Evento Atualizado")
+                .descricao("Descrição Atualizada")
+                .dataEvento(LocalDateTime.of(2025, 3, 3, 16, 0))
+                .local("Local Atualizado")
                 .build();
 
         eventResponseDTO = EventResponseDTO.builder()

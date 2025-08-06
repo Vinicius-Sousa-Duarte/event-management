@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -92,7 +92,7 @@ public class EventController {
             @Parameter(description = "Dados do evento para criar")
             @Valid @RequestBody EventCreateDTO eventDTO) {
 
-        log.info("POST /api/events - Criando evento com título: {}", eventDTO.getTitle());
+        log.info("POST /api/events - Criando evento com título: {}", eventDTO.getTitulo());
 
         EventResponseDTO createdEvent = eventService.createEvent(eventDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
@@ -113,7 +113,7 @@ public class EventController {
             @Parameter(description = "Dados do evento atualizados")
             @Valid @RequestBody EventUpdateDTO eventDTO) {
 
-        log.info("PUT /api/events/{} - Atualizando evento com título: {}", id, eventDTO.getTitle());
+        log.info("PUT /api/events/{} - Atualizando evento com título: {}", id, eventDTO.getTitulo());
 
         EventResponseDTO updatedEvent = eventService.updateEvent(id, eventDTO);
         return ResponseEntity.ok(updatedEvent);
@@ -134,5 +134,18 @@ public class EventController {
 
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/atomico")
+    @Operation(summary = "Retorna quantidade de eventos",
+            description = "Retorna a quantidade total de eventos cadastrados de acordo com o contador atomico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contador recuperado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Contador não encontrado")
+    })
+    public ResponseEntity<Integer> getContador() {
+        log.info("Contador /api/events/atomico");
+
+        return ResponseEntity.ok(eventService.getContador());
     }
 }
