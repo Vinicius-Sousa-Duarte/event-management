@@ -18,22 +18,23 @@ curl http://localhost:8080/api/events/1
 curl -X POST http://localhost:8080/api/events \
 -H "Content-Type: application/json" \
 -d '{
-  "title": "Meu Evento",
-  "description": "Descrição do evento",
-  "eventDateTime": "2025-12-25T10:00:00",
-  "location": "Local do Evento"
+  "titulo": "Meu Evento",
+  "descricao": "Descrição do evento",
+  "dataEvento": "2025-12-25T10:00:00",
+  "local": "Local do Evento"
 }'
 
 ### 4. Atualizar Evento
 curl -X PUT http://localhost:8080/api/events/1 \
 -H "Content-Type: application/json" \
 -d '{
-  "title": "Evento Atualizado",
-  "description": "Nova descrição",
-  "eventDateTime": "2025-12-26T14:00:00",
-  "location": "Novo Local"
+  "titulo": "Evento Atualizado",
+  "descricao": "Nova descrição",
+  "dataEvento": "2025-12-26T14:00:00",
+  "local": "Novo Local"
 }'
 
 ### 5. Deletar Evento
 curl -X DELETE http://localhost:8080/api/events/1
+
 
